@@ -35,10 +35,10 @@ Every model you intend to use with generic functions must be registered. This se
 
 ```go
 type User struct {
-    Id        int    `db:"id"`
-    FirstName string `db:"first_name"`
-    LastName  string `db:"last_name"`
-    Email     string `db:"email"`
+    Id        int
+    FirstName string
+    LastName  string
+    Email     string
 }
 
 func init() {

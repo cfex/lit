@@ -13,10 +13,10 @@ import "github.com/traceway/go-lightning/lpg"
 */
 
 type User struct {
-	Id        int    `db:"id"`
-	FirstName string `db:"first_name"`
-	LastName  string `db:"last_name"`
-	Email     string `db:"email"`
+	Id        int
+	FirstName string
+	LastName  string
+	Email     string
 }
 
 func init() {
