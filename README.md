@@ -1,4 +1,7 @@
-# go-lightning
+# GoLightning
+
+<img width="217" height="290" alt="Untitled copy" src="https://github.com/user-attachments/assets/991b8172-9413-4f52-9cd8-6acef7bc042b" />
+
 
 `go-lightning` is a lightweight, high-performance database interaction library for Go. It is designed to be slim, fast, and easy to use, especially when working with projections and Data Transfer Objects (DTOs).
 
