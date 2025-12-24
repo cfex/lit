@@ -6,7 +6,7 @@ replace github.com/tracewayapp/go-lightning => ../../..
 
 replace github.com/traceway/go-lightning/lmy => ../..
 
-require github.com/traceway/go-lightning/lmy v0.0.0
+require github.com/traceway/go-lightning/lmy v0.1.0
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
