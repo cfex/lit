@@ -8,8 +8,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-github.com/tracewayapp/go-lightning v0.0.0-20251223194435-7d1f7a3bc6ac h1:X9MMzKMTVEIFRZaf8W1ZJL0ENRqE4x2J9ReVUNJHKaM=
-github.com/tracewayapp/go-lightning v0.0.0-20251223194435-7d1f7a3bc6ac/go.mod h1:DAsLSMuxM17DqEE6plxq1xSZqSsYxnJuYtwBCByj7JM=
+github.com/tracewayapp/go-lightning v0.1.1 h1:3WEjXX6rpdrgMZ9O+xQukKFtE82/NeeHVer+7fiMqA8=
+github.com/tracewayapp/go-lightning v0.1.1/go.mod h1:1Dva5sVNLroXihuG+tzgz54KwuCUR0vu+bQUi/S8iVM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
