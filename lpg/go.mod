@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/stretchr/testify v1.10.0
-	github.com/tracewayapp/go-lightning v0.1.0
+	github.com/tracewayapp/go-lightning v0.1.1
 )
 
 require (

@@ -8,7 +8,7 @@ replace github.com/tracewayapp/go-lightning/lpg => ../..
 
 require (
 	github.com/jackc/pgx/v5 v5.7.6
-	github.com/tracewayapp/go-lightning/lpg v0.1.0
+	github.com/tracewayapp/go-lightning/lpg v0.1.1
 )
 
 require (
