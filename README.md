@@ -1,5 +1,3 @@
-# OUTDATED - NEEDS UPDATE
-
 <div align="center">
   <img width="150" height="200" alt="Untitled copy" src="https://github.com/user-attachments/assets/991b8172-9413-4f52-9cd8-6acef7bc042b" />
 </div>
@@ -57,7 +55,9 @@ func init() {
 }
 ```
 
-### 2. PostgreSQL Usage
+**Placeholder Syntax:** PostgreSQL uses `$1, $2, $3...` placeholders while MySQL uses `?` placeholders. The examples below use PostgreSQL syntax.
+
+### 2. Basic Usage
 
 ```go
 import (
@@ -84,34 +84,7 @@ func example(db *sql.DB) {
 }
 ```
 
-### 3. MySQL Usage
-
-```go
-import (
-    "github.com/tracewayapp/go-lightning/lit"
-    _ "github.com/go-sql-driver/mysql"
-)
-
-func example(db *sql.DB) {
-    // Insert
-    id, _ := lit.Insert(db, &User{FirstName: "John", LastName: "Doe"})
-
-    // Select Single
-    user, _ := lit.SelectSingle[User](db, "SELECT * FROM users WHERE id = ?", id)
-
-    // Select Multiple
-    users, _ := lit.Select[User](db, "SELECT * FROM users WHERE last_name = ?", "Doe")
-
-    // Update
-    user.Email = "john@example.com"
-    _ = lit.Update(db, user, "id = ?", user.Id)
-
-    // Delete
-    _ = lit.Delete(db, "DELETE FROM users WHERE id = ?", user.Id)
-}
-```
-
-### 4. Working with Transactions
+### 3. Working with Transactions
 
 All operations work with both `*sql.DB` and `*sql.Tx`:
 
@@ -138,7 +111,7 @@ func exampleWithTx(db *sql.DB) error {
 }
 ```
 
-### 5. UUID Support
+### 4. UUID Support
 
 For models with string ID fields, use UUID-specific insert functions:
 
@@ -163,7 +136,7 @@ func example(db *sql.DB) {
 }
 ```
 
-### 6. Helper Functions
+### 5. Helper Functions
 
 ```go
 // JoinForIn - for integer IN clauses
