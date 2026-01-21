@@ -159,7 +159,7 @@ placeholders := lit.JoinStringForInWithDriver(lit.MySQL, 0, 3)      // "?,?,?"
 By default, `go-lightning` converts Go struct field names from CamelCase to snake_case for database column names:
 
 | Struct Field | Database Column |
-|--------------|-----------------|
+| ------------ | --------------- |
 | `Id`         | `id`            |
 | `FirstName`  | `first_name`    |
 | `LastName`   | `last_name`     |
@@ -179,6 +179,7 @@ type User struct {
 ```
 
 The `lit` tag is used for:
+
 - **INSERT queries**: Column names in the generated INSERT statement
 - **UPDATE queries**: Column names in the generated UPDATE statement
 - **SELECT queries**: Mapping database columns back to struct fields
@@ -224,14 +225,14 @@ We welcome all contributions to the go-lightning project. You can open issues or
 
 ## Roadmap
 
-- [x] ~~Add support for ClickHouse - we're not doing this as clickhouse has a driver that is basically already doing this~~
-- [x] ~~Add more examples - the usercrud example is mostly complete - we'll add more if we get a git issue filed to do so~~
-- [x] ~~Add project docs~~
-- [x] ~~Add support for named fields `lit:"column_name"`~~
 - [ ] Named query parameters
 - [ ] Add a project homepage
 - [ ] Add support for composite primary keys
 - [ ] Escaping SQL keywords for field names and table names
+- [x] ~~Add support for ClickHouse - we're not doing this as clickhouse has a driver that is basically already doing this~~
+- [x] ~~Add more examples - the usercrud example is mostly complete - we'll add more if we get a git issue filed to do so~~
+- [x] ~~Add project docs~~
+- [x] ~~Add support for named fields `lit:"column_name"`~~
 
 ## Project Philosophy
 
