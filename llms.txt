@@ -1,0 +1,235 @@
+# go-lightning
+
+> Lightweight Go library for PostgreSQL and MySQL database operations. Provides generic CRUD functions, automatic struct-to-table mapping, and works with both `*sql.DB` and `*sql.Tx` via the Executor interface.
+
+## Installation
+
+```bash
+go get github.com/tracewayapp/go-lightning/lit
+```
+
+## Core Concepts
+
+### Model Registration
+
+Every struct used with generic CRUD functions must be registered with a driver:
+
+```go
+import "github.com/tracewayapp/go-lightning/lit"
+
+type User struct {
+    Id        int
+    FirstName string
+    LastName  string
+    Email     string
+}
+
+func init() {
+    lit.RegisterModel[User](lit.PostgreSQL)  // or lit.MySQL
+}
+```
+
+### Naming Conventions
+
+By default, struct fields are converted from CamelCase to snake_case:
+- `Id` -> `id`
+- `FirstName` -> `first_name`
+- `LastName` -> `last_name`
+
+Table names are derived from struct names with snake_case and pluralized:
+- `User` -> `users`
+- `UserProfile` -> `user_profiles`
+
+### Custom Column Names
+
+Use the `lit` struct tag to override column names:
+
+```go
+type User struct {
+    Id        int    `lit:"id"`
+    FirstName string `lit:"given_name"`    // Maps to "given_name"
+    LastName  string                       // Uses default: "last_name"
+    Phone     string `lit:"phone_number"`  // Maps to "phone_number"
+}
+```
+
+### Custom Naming Strategy
+
+Implement `DbNamingStrategy` for full control:
+
+```go
+type MyNamingStrategy struct{}
+
+func (m MyNamingStrategy) GetTableNameFromStructName(name string) string {
+    return strings.ToLower(name)
+}
+
+func (m MyNamingStrategy) GetColumnNameFromStructName(name string) string {
+    return strings.ToLower(name)
+}
+
+func init() {
+    lit.RegisterModelWithNaming[User](lit.PostgreSQL, MyNamingStrategy{})
+}
+```
+
+### Executor Interface
+
+All operations accept an `Executor` interface, which is satisfied by both `*sql.DB` and `*sql.Tx`:
+
+```go
+type Executor interface {
+    Exec(query string, args ...any) (sql.Result, error)
+    Query(query string, args ...any) (*sql.Rows, error)
+    QueryRow(query string, args ...any) *sql.Row
+}
+```
+
+## API Reference
+
+### Registration Functions
+
+- `RegisterModel[T any](driver Driver)`: Register a model with default CamelCase to snake_case naming
+- `RegisterModelWithNaming[T any](driver Driver, namingStrategy DbNamingStrategy)`: Register a model with custom naming strategy
+
+### CRUD Operations
+
+- `Insert[T any](ex Executor, t *T) (int, error)`: Insert a record and return auto-generated integer ID. The `id` field uses DEFAULT for auto-increment.
+- `InsertUuid[T any](ex Executor, t *T) (string, error)`: Insert a record with auto-generated UUID. Sets the Id field automatically.
+- `InsertExistingUuid[T any](ex Executor, t *T) error`: Insert a record using the UUID already set in the struct's Id field.
+- `Select[T any](ex Executor, query string, args ...any) ([]*T, error)`: Execute a SELECT query and return multiple records as slice of pointers.
+- `SelectSingle[T any](ex Executor, query string, args ...any) (*T, error)`: Execute a SELECT query and return the first record, or nil if none found.
+- `Update[T any](ex Executor, t *T, where string, args ...any) error`: Update a record. The `where` parameter is required and appended to the generated UPDATE query.
+- `Delete(ex Executor, query string, args ...any) error`: Execute a DELETE query. Requires full query including WHERE clause.
+
+### Native Operations (Manual Queries)
+
+- `SelectMultipleNative[T any](ex Executor, mapLine func(*interface{ Scan(...any) error }, *T) error, query string, args ...any) ([]*T, error)`: Select with custom row mapping function
+- `InsertNative(ex Executor, query string, args ...any) (int, error)`: Insert with manual query, returns LastInsertId (MySQL style)
+- `UpdateNative(ex Executor, query string, args ...any) error`: Update with manual query
+
+### Helper Functions
+
+- `JoinForIn(ids []int) string`: Convert int slice to comma-separated string for IN clauses. Example: `[]int{1,2,3}` -> `"1,2,3"`
+- `JoinStringForIn[T any](offset int, params []string) string`: Generate driver-appropriate placeholders based on registered model's driver. PostgreSQL: `$1,$2,$3`, MySQL: `?,?,?`
+- `JoinStringForInWithDriver(driver Driver, offset int, count int) string`: Generate placeholders with explicit driver specification
+
+### Driver Constants
+
+- `lit.PostgreSQL`: PostgreSQL driver constant
+- `lit.MySQL`: MySQL driver constant
+
+## Database Driver Differences
+
+### PostgreSQL
+- Placeholders: `$1, $2, $3...`
+- ID retrieval: Uses `RETURNING id` clause
+- Reserved keyword escaping: Double quotes (`"keyword"`)
+
+### MySQL
+- Placeholders: `?`
+- ID retrieval: Uses `LastInsertId()` from result
+- Reserved keyword escaping: Backticks (`` `keyword` ``)
+
+Both drivers automatically escape SQL reserved keywords in table and column names.
+
+## Usage Examples
+
+### Basic CRUD
+
+```go
+func example(db *sql.DB) {
+    // Insert - returns auto-generated ID
+    id, _ := lit.Insert(db, &User{FirstName: "Jane", LastName: "Smith"})
+
+    // Select Single
+    user, _ := lit.SelectSingle[User](db, "SELECT * FROM users WHERE id = $1", id)
+
+    // Select Multiple
+    users, _ := lit.Select[User](db, "SELECT * FROM users WHERE last_name = $1", "Smith")
+
+    // Update
+    user.Email = "jane@example.com"
+    _ = lit.Update(db, user, "id = $1", user.Id)
+
+    // Delete
+    _ = lit.Delete(db, "DELETE FROM users WHERE id = $1", user.Id)
+}
+```
+
+### Working with Transactions
+
+```go
+func exampleWithTx(db *sql.DB) error {
+    tx, err := db.Begin()
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback()
+
+    id, err := lit.Insert(tx, &User{FirstName: "John"})
+    if err != nil {
+        return err
+    }
+
+    user, err := lit.SelectSingle[User](tx, "SELECT * FROM users WHERE id = $1", id)
+    if err != nil {
+        return err
+    }
+
+    return tx.Commit()
+}
+```
+
+### UUID Models
+
+```go
+type Product struct {
+    Id    string
+    Name  string
+    Price int
+}
+
+func init() {
+    lit.RegisterModel[Product](lit.PostgreSQL)
+}
+
+func example(db *sql.DB) {
+    // Auto-generate UUID
+    uuid, _ := lit.InsertUuid(db, &Product{Name: "Widget", Price: 100})
+
+    // Use existing UUID
+    product := &Product{Id: "my-custom-uuid", Name: "Gadget", Price: 200}
+    _ = lit.InsertExistingUuid(db, product)
+}
+```
+
+### IN Clause Helpers
+
+```go
+// Integer IN clause
+ids := []int{1, 2, 3}
+query := fmt.Sprintf("SELECT * FROM users WHERE id IN (%s)", lit.JoinForIn(ids))
+
+// String IN clause with placeholders (PostgreSQL)
+names := []string{"a", "b", "c"}
+placeholders := lit.JoinStringForIn[User](0, names) // "$1,$2,$3"
+
+// Explicit driver placeholders
+pgPlaceholders := lit.JoinStringForInWithDriver(lit.PostgreSQL, 0, 3) // "$1,$2,$3"
+myPlaceholders := lit.JoinStringForInWithDriver(lit.MySQL, 0, 3)      // "?,?,?"
+```
+
+## Requirements
+
+- Tables must have an `id` column for Insert and Update operations
+- Models must be registered before use with generic functions
+- PostgreSQL uses `$1, $2` placeholders; MySQL uses `?` placeholders
+
+## Documentation
+
+Full documentation: https://tracewayapp.github.io/go-lightning
+
+## Source
+
+Repository: https://github.com/tracewayapp/go-lightning
