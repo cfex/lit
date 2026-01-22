@@ -117,9 +117,22 @@ type InsertUpdateQueryGenerator interface {
 }
 
 var StructToFieldMap = make(map[reflect.Type]*FieldMap)
+var defaultDriver *Driver = nil
 
-func RegisterModel[T any](driver Driver) {
-	RegisterModelWithNaming[T](driver, DefaultDbNamingStrategy{})
+func RegisterDriver(driver Driver) {
+	defaultDriver = &driver
+}
+
+func RegisterModel[T any](driver ...Driver) {
+	var d Driver
+	if len(driver) > 0 {
+		d = driver[0]
+	} else if defaultDriver != nil {
+		d = *defaultDriver
+	} else {
+		panic("no driver provided and no default driver set.")
+	}
+	RegisterModelWithNaming[T](d, DefaultDbNamingStrategy{})
 }
 
 func RegisterModelWithNaming[T any](driver Driver, namingStrategy DbNamingStrategy) {

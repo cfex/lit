@@ -42,6 +42,19 @@ func TestDriverString(t *testing.T) {
 	assert.Equal(t, "Unknown", Driver(99).String())
 }
 
+func TestRegisterDriver(t *testing.T) {
+	originalDriver := defaultDriver
+	defer func() { defaultDriver = originalDriver }()
+
+	RegisterDriver(PostgreSQL)
+	assert.NotNil(t, defaultDriver)
+	assert.Equal(t, PostgreSQL, *defaultDriver)
+
+	RegisterDriver(MySQL)
+	assert.NotNil(t, defaultDriver)
+	assert.Equal(t, MySQL, *defaultDriver)
+}
+
 func TestDefaultDbNamingStrategy_GetTableNameFromStructName(t *testing.T) {
 	ns := DefaultDbNamingStrategy{}
 	tests := []struct {
@@ -111,6 +124,25 @@ func TestRegisterModel_PostgreSQL(t *testing.T) {
 	assert.Contains(t, fieldMap.InsertQuery, "$1")
 }
 
+func TestRegisterModel_WithDefaultDriver_PostgreSQL(t *testing.T) {
+	originalDriver := defaultDriver
+	defer func() { defaultDriver = originalDriver }()
+
+	RegisterDriver(PostgreSQL)
+	delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+
+	RegisterModel[TestUser]()
+
+	fieldMap, err := GetFieldMap(reflect.TypeFor[TestUser]())
+	require.NoError(t, err)
+	require.NotNil(t, fieldMap)
+
+	assert.True(t, fieldMap.HasIntId)
+	assert.Equal(t, PostgreSQL, fieldMap.Driver)
+	assert.Contains(t, fieldMap.InsertQuery, "RETURNING id")
+	assert.Contains(t, fieldMap.InsertQuery, "$1")
+}
+
 func TestRegisterModel_MySQL(t *testing.T) {
 	delete(StructToFieldMap, reflect.TypeFor[TestUser]())
 
@@ -126,6 +158,38 @@ func TestRegisterModel_MySQL(t *testing.T) {
 	assert.NotContains(t, fieldMap.InsertQuery, "RETURNING")
 	assert.Contains(t, fieldMap.InsertQuery, "?")
 	assert.NotContains(t, fieldMap.InsertQuery, "$")
+}
+
+func TestRegisterModel_WithDefaultDriver_MySQL(t *testing.T) {
+	originalDriver := defaultDriver
+	defer func() { defaultDriver = originalDriver }()
+
+	RegisterDriver(MySQL)
+	delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+
+	RegisterModel[TestUser]()
+
+	fieldMap, err := GetFieldMap(reflect.TypeFor[TestUser]())
+	require.NoError(t, err)
+	require.NotNil(t, fieldMap)
+
+	assert.True(t, fieldMap.HasIntId)
+	assert.Equal(t, MySQL, fieldMap.Driver)
+	assert.NotContains(t, fieldMap.InsertQuery, "RETURNING")
+	assert.Contains(t, fieldMap.InsertQuery, "?")
+	assert.NotContains(t, fieldMap.InsertQuery, "$")
+}
+
+func TestRegisterModel_NoDriver_Panics(t *testing.T) {
+	originalDriver := defaultDriver
+	defer func() { defaultDriver = originalDriver }()
+
+	defaultDriver = nil
+	delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+
+	assert.Panics(t, func() {
+		RegisterModel[TestUser]()
+	}, "Expected panic when no driver provided and no default driver set")
 }
 
 func TestGetFieldMap_NotRegistered(t *testing.T) {
