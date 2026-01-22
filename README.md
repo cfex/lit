@@ -228,7 +228,7 @@ We welcome all contributions to the go-lightning project. You can open issues or
 - [ ] Named query parameters
 - [ ] Add a project homepage
 - [ ] Add support for composite primary keys
-- [ ] Escaping SQL keywords for field names and table names
+- [x] ~~Escaping SQL keywords for field names and table names~~
 - [x] ~~Add support for ClickHouse - we're not doing this as clickhouse has a driver that is basically already doing this~~
 - [x] ~~Add more examples - the usercrud example is mostly complete - we'll add more if we get a git issue filed to do so~~
 - [x] ~~Add project docs~~
