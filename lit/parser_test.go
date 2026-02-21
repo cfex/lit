@@ -430,3 +430,86 @@ func TestDeleteNamed_Error(t *testing.T) {
 
 	assert.NoError(t, mock.ExpectationsWereMet())
 }
+
+func TestUpdateNamed(t *testing.T) {
+	t.Run("PostgreSQL", func(t *testing.T) {
+		delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+		RegisterModel[TestUser](PostgreSQL)
+
+		db, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer db.Close()
+
+		mock.ExpectExec("UPDATE test_users SET").
+			WithArgs(1, "John", "Doe", "john@example.com", 1).
+			WillReturnResult(sqlmock.NewResult(0, 1))
+
+		user := &TestUser{Id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com"}
+		err = UpdateNamed[TestUser](db, user, "id = :id", map[string]any{"id": 1})
+		require.NoError(t, err)
+
+		assert.NoError(t, mock.ExpectationsWereMet())
+	})
+
+	t.Run("MySQL", func(t *testing.T) {
+		delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+		RegisterModel[TestUser](MySQL)
+
+		db, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer db.Close()
+
+		mock.ExpectExec("UPDATE test_users SET").
+			WithArgs(1, "John", "Doe", "john@example.com", 1).
+			WillReturnResult(sqlmock.NewResult(0, 1))
+
+		user := &TestUser{Id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com"}
+		err = UpdateNamed[TestUser](db, user, "id = :id", map[string]any{"id": 1})
+		require.NoError(t, err)
+
+		assert.NoError(t, mock.ExpectationsWereMet())
+	})
+
+	t.Run("Error", func(t *testing.T) {
+		delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+		RegisterModel[TestUser](PostgreSQL)
+
+		db, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer db.Close()
+
+		user := &TestUser{Id: 1, FirstName: "John", LastName: "Doe", Email: "john@example.com"}
+		err = UpdateNamed[TestUser](db, user, "id = :id AND email = :email",
+			map[string]any{"id": 1})
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "missing parameter: email")
+
+		assert.NoError(t, mock.ExpectationsWereMet())
+	})
+}
+
+func TestTypeP(t *testing.T) {
+	delete(StructToFieldMap, reflect.TypeFor[TestUser]())
+	RegisterModel[TestUser](PostgreSQL)
+
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer db.Close()
+
+	rows := sqlmock.NewRows([]string{"id", "first_name", "last_name", "email"}).
+		AddRow(1, "John", "Doe", "john@example.com")
+
+	mock.ExpectQuery("SELECT \\* FROM test_users WHERE id = \\$1").
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	// Use P instead of map[string]any
+	users, err := SelectNamed[TestUser](db,
+		"SELECT * FROM test_users WHERE id = :id",
+		P{"id": 1})
+	require.NoError(t, err)
+	assert.Len(t, users, 1)
+	assert.Equal(t, "John", users[0].FirstName)
+
+	assert.NoError(t, mock.ExpectationsWereMet())
+}

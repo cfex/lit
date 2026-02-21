@@ -111,6 +111,60 @@ func SelectSingle[T any](ex Executor, query string, args ...any) (*T, error)
 user, err := lit.SelectSingle[User](db, "SELECT id, name, email FROM users WHERE id = $1", 123)
 ```
 
+### SelectNamed
+
+Parses `:name` placeholders and executes a SELECT returning all matching rows.
+
+```go
+func SelectNamed[T any](ex Executor, query string, params map[string]any) ([]*T, error)
+```
+
+**Parameters:**
+
+- `ex`: Database connection or transaction
+- `query`: SQL SELECT query with `:name` placeholders
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `[]*T`: Slice of pointers to results
+- `error`: Any error (including missing parameters)
+
+**Example:**
+
+```go
+users, err := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE last_name = :last_name",
+    lit.P{"last_name": "Doe"})
+```
+
+### SelectSingleNamed
+
+Parses `:name` placeholders and executes a SELECT returning a single row or nil.
+
+```go
+func SelectSingleNamed[T any](ex Executor, query string, params map[string]any) (*T, error)
+```
+
+**Parameters:**
+
+- `ex`: Database connection or transaction
+- `query`: SQL SELECT query with `:name` placeholders
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `*T`: Pointer to result, or nil if not found
+- `error`: Any error (including missing parameters)
+
+**Example:**
+
+```go
+user, err := lit.SelectSingleNamed[User](db,
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 123})
+```
+
 ### SelectMultipleNative
 
 Executes a query with manual row scanning.
@@ -258,6 +312,32 @@ func Update[T any](ex Executor, t *T, where string, args ...any) error
 err := lit.Update(db, &user, "id = $1", user.Id)
 ```
 
+### UpdateNamed
+
+Updates a record with a named-parameter WHERE clause.
+
+```go
+func UpdateNamed[T any](ex Executor, t *T, where string, params map[string]any) error
+```
+
+**Parameters:**
+
+- `ex`: Database connection or transaction
+- `t`: Pointer to the struct with updated values
+- `where`: WHERE clause with `:name` placeholders (required)
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `error`: Any error (including missing parameters)
+
+**Example:**
+
+```go
+user.Email = "jane@example.com"
+err := lit.UpdateNamed(db, &user, "id = :id", lit.P{"id": user.Id})
+```
+
 ### UpdateNative
 
 Executes a manual UPDATE query.
@@ -290,6 +370,92 @@ func Delete(ex Executor, query string, args ...any) error
 
 ```go
 err := lit.Delete(db, "DELETE FROM users WHERE id = $1", 123)
+```
+
+### DeleteNamed
+
+Parses `:name` placeholders and executes a DELETE query.
+
+```go
+func DeleteNamed(driver Driver, ex Executor, query string, params map[string]any) error
+```
+
+**Parameters:**
+
+- `driver`: Database driver (required because `Delete` is non-generic)
+- `ex`: Database connection or transaction
+- `query`: SQL DELETE query with `:name` placeholders
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `error`: Any error (including missing parameters)
+
+**Example:**
+
+```go
+err := lit.DeleteNamed(lit.PostgreSQL, db,
+    "DELETE FROM users WHERE id = :id",
+    lit.P{"id": 123})
+```
+
+## Named Parameter Parsing
+
+### ParseNamedQuery
+
+Low-level parser that converts `:name` placeholders to driver-specific positional syntax.
+
+```go
+func ParseNamedQuery(driver Driver, query string, params map[string]any) (string, []any, error)
+```
+
+**Parameters:**
+
+- `driver`: Database driver (`lit.PostgreSQL`, `lit.MySQL`, or `lit.SQLite`)
+- `query`: SQL query with `:name` placeholders
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `string`: Transformed query with positional placeholders
+- `[]any`: Ordered argument slice
+- `error`: Any error (unsupported driver, missing parameter)
+
+**Example:**
+
+```go
+query, args, err := lit.ParseNamedQuery(lit.PostgreSQL,
+    "SELECT * FROM users WHERE id = :id AND name = :name",
+    lit.P{"id": 1, "name": "John"})
+// query = "SELECT * FROM users WHERE id = $1 AND name = $2"
+// args = [1, "John"]
+```
+
+### ParseNamedQueryForModel
+
+Like `ParseNamedQuery` but infers the driver from the model's registration.
+
+```go
+func ParseNamedQueryForModel[T any](query string, params map[string]any) (string, []any, error)
+```
+
+**Parameters:**
+
+- `query`: SQL query with `:name` placeholders
+- `params`: Map of parameter names to values
+
+**Returns:**
+
+- `string`: Transformed query with positional placeholders
+- `[]any`: Ordered argument slice
+- `error`: Any error (unregistered model, missing parameter)
+
+**Example:**
+
+```go
+query, args, err := lit.ParseNamedQueryForModel[User](
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 1})
 ```
 
 ## Helper Functions
@@ -348,6 +514,25 @@ placeholders := lit.JoinStringForInWithDriver(lit.PostgreSQL, 2, 3)
 ```
 
 ## Types
+
+### P
+
+Shorthand type alias for named parameter maps.
+
+```go
+type P = map[string]any
+```
+
+`P` is a true alias (using `=`), so it is fully interchangeable with `map[string]any` — no conversion needed.
+
+**Example:**
+
+```go
+// Instead of map[string]any{"id": 1}
+users, err := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 1})
+```
 
 ### Driver
 

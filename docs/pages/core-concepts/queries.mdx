@@ -61,6 +61,69 @@ if user == nil {
 fmt.Printf("Found: %s\n", user.Email)
 ```
 
+## Named Parameters
+
+Write portable queries with `:name` placeholders instead of driver-specific `$1` or `?`. go-lightning parses them and converts to the correct syntax automatically.
+
+### SelectNamed
+
+```go
+func SelectNamed[T any](ex Executor, query string, params map[string]any) ([]*T, error)
+```
+
+```go
+// This query works on PostgreSQL, MySQL, and SQLite — no changes needed
+users, err := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE last_name = :last_name AND email = :email",
+    lit.P{"last_name": "Doe", "email": "john@example.com"})
+```
+
+### SelectSingleNamed
+
+```go
+func SelectSingleNamed[T any](ex Executor, query string, params map[string]any) (*T, error)
+```
+
+```go
+user, err := lit.SelectSingleNamed[User](db,
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 1})
+if err != nil {
+    return err
+}
+if user == nil {
+    fmt.Println("User not found")
+}
+```
+
+### Error on Missing Parameters
+
+If a `:name` placeholder has no matching key in the params map, the function returns an error **without executing** the query:
+
+```go
+_, err := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE id = :id AND email = :email",
+    lit.P{"id": 1})
+// Error: missing parameter: email
+```
+
+### Manual Parsing
+
+For advanced use, you can parse named queries yourself and then call any operation:
+
+```go
+// Infer driver from registered model
+query, args, err := lit.ParseNamedQueryForModel[User](
+    "SELECT * FROM users WHERE id = :id", lit.P{"id": 1})
+
+// Or specify driver explicitly
+query, args, err := lit.ParseNamedQuery(lit.PostgreSQL,
+    "SELECT * FROM users WHERE id = :id", lit.P{"id": 1})
+// query = "SELECT * FROM users WHERE id = $1", args = [1]
+```
+
+The parser correctly handles PostgreSQL `::` type casts, single-quoted string literals, and repeated parameters.
+
 ## Column Validation
 
 go-lightning validates that all columns in your SELECT match fields in your struct. This catches errors early:

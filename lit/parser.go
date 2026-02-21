@@ -117,6 +117,18 @@ func SelectSingleNamed[T any](ex Executor, query string, params map[string]any) 
 	return SelectSingle[T](ex, parsed, args...)
 }
 
+func UpdateNamed[T any](ex Executor, t *T, where string, params map[string]any) error {
+	fieldMap, err := GetFieldMap(reflect.TypeFor[T]())
+	if err != nil {
+		return err
+	}
+	parsedWhere, args, err := ParseNamedQuery(fieldMap.Driver, where, params)
+	if err != nil {
+		return err
+	}
+	return Update[T](ex, t, parsedWhere, args...)
+}
+
 func DeleteNamed(driver Driver, ex Executor, query string, params map[string]any) error {
 	parsed, args, err := ParseNamedQuery(driver, query, params)
 	if err != nil {

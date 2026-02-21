@@ -8,6 +8,9 @@ import (
 	"unicode"
 )
 
+// P is a shorthand for named parameter maps used with Named functions.
+type P = map[string]any
+
 type Driver int
 
 const (

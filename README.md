@@ -136,7 +136,48 @@ func example(db *sql.DB) {
 }
 ```
 
-### 5. Helper Functions
+### 5. Named Parameters
+
+Write portable queries with `:name` placeholders. go-lightning automatically converts them to the correct driver syntax (`$1` for PostgreSQL, `?` for MySQL/SQLite):
+
+```go
+// Use lit.P as a shorthand for map[string]any
+users, _ := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE last_name = :last_name AND email = :email",
+    lit.P{"last_name": "Doe", "email": "john@example.com"})
+
+// Single result
+user, _ := lit.SelectSingleNamed[User](db,
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 1})
+
+// Update with named WHERE clause
+user.Email = "jane@example.com"
+_ = lit.UpdateNamed(db, user,
+    "id = :id",
+    lit.P{"id": 1})
+
+// Delete (requires explicit driver since Delete is non-generic)
+_ = lit.DeleteNamed(lit.PostgreSQL, db,
+    "DELETE FROM users WHERE id = :id",
+    lit.P{"id": 1})
+```
+
+For advanced use, you can parse named queries manually:
+
+```go
+// Using model's registered driver
+query, args, err := lit.ParseNamedQueryForModel[User](
+    "SELECT * FROM users WHERE id = :id", lit.P{"id": 1})
+
+// Using explicit driver
+query, args, err := lit.ParseNamedQuery(lit.PostgreSQL,
+    "SELECT * FROM users WHERE id = :id", lit.P{"id": 1})
+```
+
+The parser handles PostgreSQL `::` type casts, string literals, and repeated parameters correctly.
+
+### 6. Helper Functions
 
 ```go
 // JoinForIn - for integer IN clauses
@@ -154,7 +195,7 @@ placeholders := lit.JoinStringForInWithDriver(lit.PostgreSQL, 0, 3) // "$1,$2,$3
 placeholders := lit.JoinStringForInWithDriver(lit.MySQL, 0, 3)      // "?,?,?"
 ```
 
-### 6. Column Naming
+### 7. Column Naming
 
 By default, `go-lightning` converts Go struct field names from CamelCase to snake_case for database column names:
 
@@ -225,7 +266,7 @@ We welcome all contributions to the go-lightning project. You can open issues or
 
 ## Roadmap
 
-- [ ] Named query parameters
+- [x] ~~Named query parameters~~
 - [ ] Add a project homepage
 - [ ] Add support for composite primary keys
 - [x] ~~Escaping SQL keywords for field names and table names~~

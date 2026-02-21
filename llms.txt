@@ -110,16 +110,38 @@ type Executor interface {
 - `InsertNative(ex Executor, query string, args ...any) (int, error)`: Insert with manual query, returns LastInsertId (MySQL style)
 - `UpdateNative(ex Executor, query string, args ...any) error`: Update with manual query
 
+### Named Parameter Functions
+
+Write portable queries with `:name` placeholders. The parser converts them to driver-specific syntax (`$1` for PostgreSQL, `?` for MySQL/SQLite).
+
+- `SelectNamed[T any](ex Executor, query string, params map[string]any) ([]*T, error)`: Parse named params using the model's registered driver, then execute SELECT returning multiple rows.
+- `SelectSingleNamed[T any](ex Executor, query string, params map[string]any) (*T, error)`: Parse named params using the model's registered driver, then execute SELECT returning a single row or nil.
+- `UpdateNamed[T any](ex Executor, t *T, where string, params map[string]any) error`: Parse named params in WHERE clause using the model's registered driver, then execute UPDATE. Delegates to `Update` which handles PG placeholder renumbering internally.
+- `DeleteNamed(driver Driver, ex Executor, query string, params map[string]any) error`: Parse named params with explicit driver, then execute DELETE. Takes explicit driver because `Delete` is non-generic.
+- `ParseNamedQuery(driver Driver, query string, params map[string]any) (string, []any, error)`: Low-level parser. Converts `:name` placeholders to driver-specific syntax. Returns transformed query and positional args.
+- `ParseNamedQueryForModel[T any](query string, params map[string]any) (string, []any, error)`: Like `ParseNamedQuery` but infers driver from the model's registration.
+
+The parser correctly handles:
+- PostgreSQL `::` type casts (e.g., `:val::text` produces `$1::text`)
+- Single-quoted string literals (`:name` inside quotes is not replaced)
+- Repeated parameters (each occurrence gets its own positional placeholder)
+- Missing parameters return an error without executing the query
+
 ### Helper Functions
 
 - `JoinForIn(ids []int) string`: Convert int slice to comma-separated string for IN clauses. Example: `[]int{1,2,3}` -> `"1,2,3"`
 - `JoinStringForIn[T any](offset int, params []string) string`: Generate driver-appropriate placeholders based on registered model's driver. PostgreSQL: `$1,$2,$3`, MySQL: `?,?,?`
 - `JoinStringForInWithDriver(driver Driver, offset int, count int) string`: Generate placeholders with explicit driver specification
 
+### Type Aliases
+
+- `P`: Alias for `map[string]any`. Use `lit.P{"id": 1}` instead of `map[string]any{"id": 1}` for less verbose named parameter calls.
+
 ### Driver Constants
 
 - `lit.PostgreSQL`: PostgreSQL driver constant
 - `lit.MySQL`: MySQL driver constant
+- `lit.SQLite`: SQLite driver constant
 
 ## Database Driver Differences
 
@@ -204,6 +226,35 @@ func example(db *sql.DB) {
     product := &Product{Id: "my-custom-uuid", Name: "Gadget", Price: 200}
     _ = lit.InsertExistingUuid(db, product)
 }
+```
+
+### Named Parameters
+
+```go
+// Select multiple with named params (driver inferred from model)
+users, err := lit.SelectNamed[User](db,
+    "SELECT * FROM users WHERE last_name = :last_name AND email = :email",
+    lit.P{"last_name": "Doe", "email": "john@example.com"})
+
+// Select single with named params
+user, err := lit.SelectSingleNamed[User](db,
+    "SELECT * FROM users WHERE id = :id",
+    lit.P{"id": 1})
+
+// Update with named WHERE clause
+user.Email = "jane@example.com"
+err := lit.UpdateNamed(db, user, "id = :id", lit.P{"id": 1})
+
+// Delete with named params (explicit driver)
+err := lit.DeleteNamed(lit.PostgreSQL, db,
+    "DELETE FROM users WHERE id = :id",
+    lit.P{"id": 1})
+
+// Manual parsing
+query, args, err := lit.ParseNamedQueryForModel[User](
+    "SELECT * FROM users WHERE id = :id", lit.P{"id": 1})
+// PostgreSQL: query = "SELECT * FROM users WHERE id = $1", args = [1]
+// MySQL:      query = "SELECT * FROM users WHERE id = ?",  args = [1]
 ```
 
 ### IN Clause Helpers

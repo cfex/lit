@@ -112,6 +112,29 @@ lit.Update(db, &user, "id = $1 AND active = $2", user.Id, true)
 // UPDATE users SET id = $1, first_name = $2, last_name = $3, email = $4 WHERE id = $5 AND active = $6
 ```
 
+### UpdateNamed
+
+Update with portable `:name` placeholders in the WHERE clause:
+
+```go
+func UpdateNamed[T any](ex Executor, t *T, where string, params map[string]any) error
+```
+
+`UpdateNamed` infers the driver from the model's registration and delegates to `Update`, which handles PostgreSQL placeholder renumbering internally.
+
+```go
+user.Email = "jane@example.com"
+err := lit.UpdateNamed(db, &user, "id = :id", lit.P{"id": user.Id})
+```
+
+Missing parameters return an error without executing the query:
+
+```go
+err := lit.UpdateNamed(db, &user, "id = :id AND email = :email",
+    lit.P{"id": 1})
+// Error: missing parameter: email
+```
+
 ## Delete
 
 Delete uses manual SQL for full control:
@@ -133,6 +156,31 @@ err := lit.Delete(db, "DELETE FROM users WHERE last_login < $1", cutoffDate)
 ids := []int{1, 2, 3}
 err := lit.Delete(db,
     "DELETE FROM users WHERE id IN ("+lit.JoinForIn(ids)+")")
+```
+
+### DeleteNamed
+
+Delete with portable `:name` placeholders:
+
+```go
+func DeleteNamed(driver Driver, ex Executor, query string, params map[string]any) error
+```
+
+`DeleteNamed` takes an explicit `driver` parameter because `Delete` is non-generic (there is no model type to infer the driver from).
+
+```go
+err := lit.DeleteNamed(lit.PostgreSQL, db,
+    "DELETE FROM users WHERE id = :id",
+    lit.P{"id": 1})
+```
+
+Missing parameters return an error without executing the query:
+
+```go
+err := lit.DeleteNamed(lit.PostgreSQL, db,
+    "DELETE FROM users WHERE id = :id AND email = :email",
+    lit.P{"id": 1})
+// Error: missing parameter: email
 ```
 
 ## IN Clause Helpers
