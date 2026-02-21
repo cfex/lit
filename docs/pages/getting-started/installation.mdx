@@ -5,7 +5,7 @@
 - Go 1.21 or higher
 - A supported database (PostgreSQL or MySQL)
 
-## Install go-lightning
+## Install lit
 
 ```bash
 go get github.com/tracewayapp/go-lightning/lit
@@ -13,7 +13,7 @@ go get github.com/tracewayapp/go-lightning/lit
 
 ## Database Drivers
 
-go-lightning works with standard `database/sql` drivers. Install the driver for your database:
+lit works with standard `database/sql` drivers. Install the driver for your database:
 
 ### PostgreSQL
 
@@ -51,7 +51,7 @@ type User struct {
 
 func main() {
     lit.RegisterModel[User](lit.PostgreSQL) // or lit.MySQL
-    fmt.Println("go-lightning installed successfully!")
+    fmt.Println("lit installed successfully!")
 }
 ```
 
@@ -61,4 +61,4 @@ Run it:
 go run main.go
 ```
 
-If you see "go-lightning installed successfully!", you're ready to proceed to the [Quick Start](/getting-started/quick-start).
+If you see "lit installed successfully!", you're ready to proceed to the [Quick Start](/getting-started/quick-start).

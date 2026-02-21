@@ -1,12 +1,12 @@
 # Comparison
 
-How does go-lightning compare to other Go database libraries?
+How does lit compare to other Go database libraries?
 
 ## vs GORM
 
 [GORM](https://gorm.io/) is a full-featured ORM with associations, hooks, migrations, and more.
 
-| Aspect | GORM | go-lightning |
+| Aspect | GORM | lit |
 |--------|------|--------------|
 | **Query Builder** | Yes, chainable API | No, write SQL |
 | **Relationships** | Full support (belongs_to, has_many, etc.) | None |
@@ -16,7 +16,7 @@ How does go-lightning compare to other Go database libraries?
 | **Learning Curve** | Moderate to steep | Minimal |
 | **Dependencies** | Heavy | Minimal |
 
-**Choose go-lightning if:** You want simplicity, full SQL control, and minimal overhead.
+**Choose lit if:** You want simplicity, full SQL control, and minimal overhead.
 
 **Choose GORM if:** You need relationship management, auto-migrations, or an ActiveRecord-style API.
 
@@ -28,7 +28,7 @@ db.Where("email = ?", email).First(&user)
 db.Create(&user)
 db.Save(&user)
 
-// go-lightning
+// lit
 lit.SelectSingle[User](db, "SELECT id, name, email FROM users WHERE email = $1", email)
 lit.Insert(db, &user)
 lit.Update(db, &user, "id = $1", user.Id)
@@ -38,7 +38,7 @@ lit.Update(db, &user, "id = $1", user.Id)
 
 [sqlx](https://github.com/jmoiron/sqlx) extends `database/sql` with struct scanning and named parameters.
 
-| Aspect | sqlx | go-lightning |
+| Aspect | sqlx | lit |
 |--------|------|--------------|
 | **Struct Scanning** | Yes, via tags | Yes, via registration |
 | **Named Parameters** | Yes | No |
@@ -47,7 +47,7 @@ lit.Update(db, &user, "id = $1", user.Id)
 | **Reflection** | Every query | Once at registration |
 | **Query Caching** | No | Yes |
 
-**Choose go-lightning if:** You want auto-generated INSERT/UPDATE with cached queries.
+**Choose lit if:** You want auto-generated INSERT/UPDATE with cached queries.
 
 **Choose sqlx if:** You need named parameters or prefer struct tags over registration.
 
@@ -63,7 +63,7 @@ type User struct {
 db.Get(&user, "SELECT * FROM users WHERE id = $1", id)
 db.Exec("INSERT INTO users (name, email) VALUES ($1, $2)", user.Name, user.Email)
 
-// go-lightning - INSERT is auto-generated
+// lit - INSERT is auto-generated
 type User struct {
     Id    int
     Name  string
@@ -78,7 +78,7 @@ lit.Insert(db, &user) // Query pre-generated
 
 [sqlc](https://sqlc.dev/) generates type-safe Go code from SQL queries.
 
-| Aspect | sqlc | go-lightning |
+| Aspect | sqlc | lit |
 |--------|------|--------------|
 | **Code Generation** | Yes, required | No |
 | **Build Step** | Yes | No |
@@ -87,7 +87,7 @@ lit.Insert(db, &user) // Query pre-generated
 | **IDE Support** | Full (generated types) | Standard Go |
 | **Runtime Flexibility** | None | Full |
 
-**Choose go-lightning if:** You want runtime flexibility without a build step.
+**Choose lit if:** You want runtime flexibility without a build step.
 
 **Choose sqlc if:** You want compile-time type safety and don't mind code generation.
 
@@ -100,7 +100,7 @@ lit.Insert(db, &user) // Query pre-generated
 3. Use generated Go functions
 4. Repeat on query changes
 
-# go-lightning workflow
+# lit workflow
 1. Define Go struct
 2. Register model
 3. Write SQL in Go code
@@ -111,7 +111,7 @@ lit.Insert(db, &user) // Query pre-generated
 
 [ent](https://entgo.io/) is a code-generation based ORM with a graph-based API.
 
-| Aspect | ent | go-lightning |
+| Aspect | ent | lit |
 |--------|-----|--------------|
 | **Code Generation** | Heavy (entire data layer) | None |
 | **Schema Definition** | Go code with DSL | Plain Go structs |
@@ -120,7 +120,7 @@ lit.Insert(db, &user) // Query pre-generated
 | **Migrations** | Auto-generated | None |
 | **Learning Curve** | Steep | Minimal |
 
-**Choose go-lightning if:** You want simplicity and no code generation.
+**Choose lit if:** You want simplicity and no code generation.
 
 **Choose ent if:** You need graph-style queries and relationships.
 
@@ -140,7 +140,7 @@ func (User) Edges() []ent.Edge {
     }
 }
 
-// go-lightning - plain struct
+// lit - plain struct
 type User struct {
     Id    int
     Name  string
@@ -150,7 +150,7 @@ type User struct {
 
 ## Summary Table
 
-| Feature | go-lightning | GORM | sqlx | sqlc | ent |
+| Feature | lit | GORM | sqlx | sqlc | ent |
 |---------|-------------|------|------|------|-----|
 | Code Generation | None | None | None | Required | Required |
 | Build Step | No | No | No | Yes | Yes |
@@ -162,9 +162,9 @@ type User struct {
 | Learning Curve | Low | Medium | Low | Medium | High |
 | SQL Control | Full | Partial | Full | Full | Partial |
 
-## When to Choose go-lightning
+## When to Choose lit
 
-go-lightning is ideal when you:
+lit is ideal when you:
 
 - Want to write your own SQL
 - Don't need relationship mapping

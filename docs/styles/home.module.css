@@ -1,0 +1,427 @@
+.page {
+  background: #09090b;
+  color: #fafafa;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ── Background effects ── */
+.bgEffect {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgEffect::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  height: 550px;
+  background: radial-gradient(
+    ellipse,
+    rgba(59, 130, 246, 0.07) 0%,
+    transparent 70%
+  );
+}
+
+.bgEffect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Navigation ── */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fafafa;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navLink {
+  color: #a1a1aa;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.navLink:hover {
+  color: #fafafa;
+}
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 7rem 1.5rem 4rem;
+  max-width: 720px;
+  margin: 0 auto;
+  animation: fadeUp 0.6s ease-out;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid #27272a;
+  background: rgba(39, 39, 42, 0.4);
+  color: #a1a1aa;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: clamp(4rem, 10vw, 7rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin: 0 0 1.5rem;
+  background: linear-gradient(180deg, #ffffff 30%, #71717a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #a1a1aa;
+  max-width: 540px;
+  margin: 0 auto 2.5rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.625rem 1.25rem;
+  background: #fafafa;
+  color: #09090b;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  color: #fafafa;
+  border: 1px solid #27272a;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.secondaryBtn:hover {
+  border-color: #3f3f46;
+  background: rgba(39, 39, 42, 0.3);
+}
+
+.installCmd {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba(39, 39, 42, 0.3);
+  border: 1px solid #27272a;
+  border-radius: 0.375rem;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    monospace;
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+}
+
+/* ── Features ── */
+.features {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+  animation: fadeUp 0.6s ease-out 0.15s both;
+}
+
+.sectionLabel {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #52525b;
+  margin: 0 0 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #27272a;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.card {
+  background: #09090b;
+  padding: 1.75rem;
+  transition: background-color 0.2s;
+}
+
+.card:hover {
+  background: #0c0c0f;
+}
+
+.cardTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: #fafafa;
+}
+
+.cardDesc {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #71717a;
+  margin: 0;
+}
+
+/* ── Code example ── */
+.codeSection {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+  animation: fadeUp 0.6s ease-out 0.3s both;
+}
+
+.codeTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.375rem;
+  color: #fafafa;
+  letter-spacing: -0.02em;
+}
+
+.codeSubtitle {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #71717a;
+  margin: 0 0 1.5rem;
+}
+
+.codeBlock {
+  background: #0a0a0a;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.codeHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1c1c1f;
+}
+
+.dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #27272a;
+}
+
+.fileName {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #52525b;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    monospace;
+}
+
+.codeBody {
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    monospace;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: #d4d4d8;
+}
+
+.codeBody pre {
+  margin: 0;
+  white-space: pre;
+}
+
+/* Syntax highlighting */
+.kw {
+  color: #c084fc;
+}
+.ty {
+  color: #60a5fa;
+}
+.fn {
+  color: #e2e8f0;
+}
+.st {
+  color: #86efac;
+}
+.cm {
+  color: #52525b;
+}
+
+/* ── Traceway section ── */
+.traceway {
+  text-align: center;
+  padding: 4rem 1.5rem 5rem;
+  max-width: 540px;
+  margin: 0 auto;
+  animation: fadeUp 0.6s ease-out 0.45s both;
+}
+
+.tracewayLink {
+  display: inline-block;
+  transition: opacity 0.15s;
+}
+
+.tracewayLink:hover {
+  opacity: 0.8;
+}
+
+.tracewayLogo {
+  height: 2rem;
+  opacity: 0.7;
+  margin-bottom: 1.25rem;
+}
+
+.tracewayText {
+  font-size: 1rem;
+  color: #a1a1aa;
+  margin: 0 0 0.5rem;
+}
+
+.tracewayInline {
+  color: #fafafa;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.tracewayInline:hover {
+  opacity: 0.8;
+}
+
+.tracewayDesc {
+  font-size: 0.875rem;
+  color: #52525b;
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid #18181b;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #52525b;
+}
+
+.footerLink {
+  color: #71717a;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footerLink:hover {
+  color: #fafafa;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 4rem 1.5rem 3rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

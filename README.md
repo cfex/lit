@@ -1,6 +1,10 @@
-<div align="center">
-  <img width="150" height="200" alt="Untitled copy" src="https://github.com/user-attachments/assets/991b8172-9413-4f52-9cd8-6acef7bc042b" />
-</div>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo-white.png" />
+    <source media="(prefers-color-scheme: light)" srcset="logo-black.png" />
+    <img src="logo-black.png" alt="go-lightning logo" width="150" />
+  </picture>
+</p>
 
 # go-lightning
 

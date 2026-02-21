@@ -1,10 +1,10 @@
 # Registration
 
-Registration is the foundation of go-lightning's performance. By registering models at startup, all reflection and query generation happens once, not on every database operation.
+Registration is the foundation of lit's performance. By registering models at startup, all reflection and query generation happens once, not on every database operation.
 
 ## Why Registration Exists
 
-Traditional ORMs use reflection on every query to map struct fields to database columns. This adds overhead to every operation. go-lightning takes a different approach:
+Traditional ORMs use reflection on every query to map struct fields to database columns. This adds overhead to every operation. lit takes a different approach:
 
 1. **Register once** at application startup
 2. **Use cached data** for all subsequent operations
@@ -45,7 +45,7 @@ lit.RegisterModel[User](lit.MySQL) // uses MySQL driver
 
 ## What Gets Cached
 
-When you call `RegisterModel`, go-lightning creates a `FieldMap` containing:
+When you call `RegisterModel`, lit creates a `FieldMap` containing:
 
 | Field           | Description                                           |
 | --------------- | ----------------------------------------------------- |
@@ -59,7 +59,7 @@ When you call `RegisterModel`, go-lightning creates a `FieldMap` containing:
 
 ## Default Naming Convention
 
-go-lightning converts Go's CamelCase to SQL's snake_case:
+lit converts Go's CamelCase to SQL's snake_case:
 
 | Go Field    | SQL Column   |
 | ----------- | ------------ |
@@ -76,7 +76,7 @@ Table names are derived from struct names with an `s` suffix:
 
 ## ID Detection
 
-go-lightning automatically detects if your `id` field is an integer:
+lit automatically detects if your `id` field is an integer:
 
 ```go
 // Integer ID - uses DEFAULT in INSERT, RETURNING id (PostgreSQL) or LastInsertId (MySQL)

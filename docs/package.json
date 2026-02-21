@@ -1,7 +1,7 @@
 {
-  "name": "go-lightning-docs",
+  "name": "lit-docs",
   "version": "1.0.0",
-  "description": "Documentation for go-lightning - A lightweight Go library for database operations",
+  "description": "Documentation for lit - A lightweight Go library for database operations",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

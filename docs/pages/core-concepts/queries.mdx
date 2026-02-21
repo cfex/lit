@@ -1,6 +1,6 @@
 # Queries
 
-go-lightning provides two functions for reading data: `Select` for multiple rows and `SelectSingle` for a single row.
+lit provides two functions for reading data: `Select` for multiple rows and `SelectSingle` for a single row.
 
 ## Select
 
@@ -63,7 +63,7 @@ fmt.Printf("Found: %s\n", user.Email)
 
 ## Named Parameters
 
-Write portable queries with `:name` placeholders instead of driver-specific `$1` or `?`. go-lightning parses them and converts to the correct syntax automatically.
+Write portable queries with `:name` placeholders instead of driver-specific `$1` or `?`. lit parses them and converts to the correct syntax automatically.
 
 ### SelectNamed
 
@@ -126,7 +126,7 @@ The parser correctly handles PostgreSQL `::` type casts, single-quoted string li
 
 ## Column Validation
 
-go-lightning validates that all columns in your SELECT match fields in your struct. This catches errors early:
+lit validates that all columns in your SELECT match fields in your struct. This catches errors early:
 
 ```go
 // This will return an error if 'nonexistent' is not a field in User

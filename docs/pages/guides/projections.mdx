@@ -1,6 +1,6 @@
 # Projections & DTOs
 
-go-lightning can map query results to any registered struct, not just your main models. This enables DTOs (Data Transfer Objects) for partial selects, JOINs, and aggregations.
+lit can map query results to any registered struct, not just your main models. This enables DTOs (Data Transfer Objects) for partial selects, JOINs, and aggregations.
 
 ## Why Use Projections?
 
@@ -221,6 +221,6 @@ func SearchUsers(db *sql.DB, query string) ([]*UserSearchResult, error) {
 
 1. **Register all DTOs**: Each struct you use with `Select` or `SelectSingle` must be registered
 2. **Match column names**: SQL column names (or aliases) must match your struct field names after snake_case conversion
-3. **Column validation**: go-lightning validates columns at runtime and returns clear errors for mismatches
+3. **Column validation**: lit validates columns at runtime and returns clear errors for mismatches
 4. **Reuse DTOs**: Create a `dto` package for shared projection types
 5. **Keep it simple**: If a projection is only used once, consider if it's worth the extra type
