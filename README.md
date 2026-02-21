@@ -1,9 +1,11 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="logo-white.png" />
-    <source media="(prefers-color-scheme: light)" srcset="logo-black.png" />
-    <img src="logo-black.png" alt="go-lightning logo" width="150" />
-  </picture>
+  <a href="https://lit.tracewayapp.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="logo-white.png" />
+      <source media="(prefers-color-scheme: light)" srcset="logo-black.png" />
+      <img src="logo-black.png" alt="go-lightning logo" width="150" />
+    </picture>
+  </a>
 </p>
 
 # go-lightning
@@ -23,7 +25,7 @@ The project is currently used in a **production environment**.
 
 ## Docs
 
-Documentation is available at https://tracewayapp.github.io/go-lightning
+Documentation is available at https://lit.tracewayapp.com
 
 ## Usage Limitations
 
