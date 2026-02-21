@@ -8,9 +8,9 @@
   </a>
 </p>
 
-# go-lightning
+# lit
 
-`go-lightning` is a lightweight, high-performance database interaction library for Go. It is designed to be slim, fast, and easy to use, especially when working with projections and Data Transfer Objects (DTOs).
+`lit` is a lightweight, high-performance database interaction library for Go. It is designed to be slim, fast, and easy to use, especially when working with projections and Data Transfer Objects (DTOs).
 
 The project is currently used in a **production environment**.
 
@@ -18,7 +18,7 @@ The project is currently used in a **production environment**.
 
 - **Unified API**: The `lit` package provides a single API for both PostgreSQL and MySQL, with driver-specific optimizations handled internally.
 - **Lightweight Projections**: The biggest advantage of `go-lightning` is its ability to load DTOs and projections with minimal effort. Regardless of your table structure, mapping a query result to a Go struct is straightforward and clean.
-- **MySQL and PostgreSQL Support**: Register your models with the appropriate driver and the library handles query generation and driver-specific optimizations.
+- **MySQL, PostgreSQL, and SQLite Support**: Register your models with the appropriate driver and the library handles query generation and driver-specific optimizations.
 - **Generic CRUD Operations**: Automatic generation of `INSERT` and `UPDATE` queries for registered types.
 - **Works with DB and Tx**: All operations accept both `*sql.DB` and `*sql.Tx` via the `Executor` interface.
 - **Minimal Dependencies**: Keeps your project slim and focused.
@@ -58,6 +58,8 @@ func init() {
     lit.RegisterModel[User](lit.PostgreSQL)
     // OR Register for MySQL
     lit.RegisterModel[User](lit.MySQL)
+    // OR Register for SQLite
+    lit.RegisterModel[User](lit.SQLite)
 }
 ```
 
@@ -273,7 +275,7 @@ We welcome all contributions to the go-lightning project. You can open issues or
 ## Roadmap
 
 - [x] ~~Named query parameters~~
-- [ ] Add a project homepage
+- [x] ~~Add a project homepage~~
 - [ ] Add support for composite primary keys
 - [x] ~~Escaping SQL keywords for field names and table names~~
 - [x] ~~Add support for ClickHouse - we're not doing this as clickhouse has a driver that is basically already doing this~~
