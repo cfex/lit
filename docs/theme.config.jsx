@@ -9,9 +9,9 @@ function Logo() {
 export default {
   logo: <Logo />,
   project: {
-    link: 'https://github.com/tracewayapp/go-lightning'
+    link: 'https://github.com/tracewayapp/lit'
   },
-  docsRepositoryBase: 'https://github.com/tracewayapp/go-lightning/tree/main/docs',
+  docsRepositoryBase: 'https://github.com/tracewayapp/lit/tree/main/docs',
   useNextSeoProps() {
     return {
       titleTemplate: '%s – lit'

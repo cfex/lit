@@ -1,6 +1,6 @@
-# go-lightning Documentation
+# lit Documentation
 
-Nextra-based documentation for go-lightning library.
+Nextra-based documentation for lit library.
 
 ## Development
 
@@ -97,10 +97,10 @@ jobs:
 
 #### Base Path for Subdirectory
 
-If hosting at `https://user.github.io/go-lightning/`:
+If hosting at `https://user.github.io/lit/`:
 
 ```bash
-BASE_PATH=/go-lightning npm run export
+BASE_PATH=/lit npm run export
 ```
 
 ### Netlify

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"usercrud/models"
 
-	"github.com/tracewayapp/go-lightning/lit"
+	"github.com/tracewayapp/lit"
 )
 
 // if you were to run this with mysql you would need to replace $1, $2... with ?

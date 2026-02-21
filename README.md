@@ -3,7 +3,7 @@
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="logo-white.png" />
       <source media="(prefers-color-scheme: light)" srcset="logo-black.png" />
-      <img src="logo-black.png" alt="go-lightning logo" width="150" />
+      <img src="logo-black.png" alt="lit logo" width="150" />
     </picture>
   </a>
 </p>
@@ -17,7 +17,7 @@ The project is currently used in a **production environment**.
 ## Key Features
 
 - **Unified API**: The `lit` package provides a single API for both PostgreSQL and MySQL, with driver-specific optimizations handled internally.
-- **Lightweight Projections**: The biggest advantage of `go-lightning` is its ability to load DTOs and projections with minimal effort. Regardless of your table structure, mapping a query result to a Go struct is straightforward and clean.
+- **Lightweight Projections**: The biggest advantage of `lit` is its ability to load DTOs and projections with minimal effort. Regardless of your table structure, mapping a query result to a Go struct is straightforward and clean.
 - **MySQL, PostgreSQL, and SQLite Support**: Register your models with the appropriate driver and the library handles query generation and driver-specific optimizations.
 - **Generic CRUD Operations**: Automatic generation of `INSERT` and `UPDATE` queries for registered types.
 - **Works with DB and Tx**: All operations accept both `*sql.DB` and `*sql.Tx` via the `Executor` interface.
@@ -34,7 +34,7 @@ Documentation is available at https://lit.tracewayapp.com
 ## Installation
 
 ```bash
-go get github.com/tracewayapp/go-lightning/lit
+go get github.com/tracewayapp/lit
 ```
 
 ## Configuration & Usage
@@ -44,7 +44,7 @@ go get github.com/tracewayapp/go-lightning/lit
 Every model you intend to use with generic functions must be registered with a specific driver.
 
 ```go
-import "github.com/tracewayapp/go-lightning/lit"
+import "github.com/tracewayapp/lit"
 
 type User struct {
     Id        int
@@ -69,7 +69,7 @@ func init() {
 
 ```go
 import (
-    "github.com/tracewayapp/go-lightning/lit"
+    "github.com/tracewayapp/lit"
     _ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -146,7 +146,7 @@ func example(db *sql.DB) {
 
 ### 5. Named Parameters
 
-Write portable queries with `:name` placeholders. go-lightning automatically converts them to the correct driver syntax (`$1` for PostgreSQL, `?` for MySQL/SQLite):
+Write portable queries with `:name` placeholders. lit automatically converts them to the correct driver syntax (`$1` for PostgreSQL, `?` for MySQL/SQLite):
 
 ```go
 // Use lit.P as a shorthand for map[string]any
@@ -205,7 +205,7 @@ placeholders := lit.JoinStringForInWithDriver(lit.MySQL, 0, 3)      // "?,?,?"
 
 ### 7. Column Naming
 
-By default, `go-lightning` converts Go struct field names from CamelCase to snake_case for database column names:
+By default, `lit` converts Go struct field names from CamelCase to snake_case for database column names:
 
 | Struct Field | Database Column |
 | ------------ | --------------- |
@@ -270,7 +270,7 @@ Note: The `lit` tag takes precedence over any naming strategy.
 
 ## Contributions
 
-We welcome all contributions to the go-lightning project. You can open issues or PR and we will review and promptly merge them.
+We welcome all contributions to the lit project. You can open issues or PR and we will review and promptly merge them.
 
 ## Roadmap
 

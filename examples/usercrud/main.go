@@ -9,7 +9,7 @@ import (
 	"usercrud/controllers"
 	"usercrud/models"
 
-	"github.com/tracewayapp/go-lightning/lit"
+	"github.com/tracewayapp/lit"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jackc/pgx/v5/stdlib"

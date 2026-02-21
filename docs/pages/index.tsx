@@ -122,7 +122,7 @@ export default function HomePage() {
                 Docs
               </Link>
               <a
-                href="https://github.com/tracewayapp/go-lightning"
+                href="https://github.com/tracewayapp/lit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={s.navLink}
@@ -133,7 +133,7 @@ export default function HomePage() {
           </nav>
 
           <section className={s.hero}>
-            <a href="https://github.com/tracewayapp/go-lightning" target="_blank" rel="noopener noreferrer" className={s.badge}>Open Source Go ORM</a>
+            <a href="https://github.com/tracewayapp/lit" target="_blank" rel="noopener noreferrer" className={s.badge}>Open Source Go ORM</a>
             <h1 className={s.title}>lit</h1>
             <p className={s.subtitle}>
               A lightweight Go library that eliminates database boilerplate.
@@ -149,7 +149,7 @@ export default function HomePage() {
                   Get Started
                 </Link>
                 <a
-                  href="https://github.com/tracewayapp/go-lightning"
+                  href="https://github.com/tracewayapp/lit"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={s.secondaryBtn}
@@ -158,7 +158,7 @@ export default function HomePage() {
                 </a>
               </div>
               <code className={s.installCmd}>
-                go get github.com/tracewayapp/go-lightning/lit
+                go get github.com/tracewayapp/lit
               </code>
             </div>
           </section>

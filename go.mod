@@ -1,4 +1,4 @@
-module github.com/tracewayapp/go-lightning/lit
+module github.com/tracewayapp/lit
 
 go 1.25.1
 

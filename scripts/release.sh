@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Release script for go-lightning
+# Release script for lit
 # Tags the lit module with the given version.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,7 +13,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-MODULE="github.com/tracewayapp/go-lightning/lit"
+MODULE="github.com/tracewayapp/lit"
 
 usage() {
     echo "Usage: $0 <version>"
@@ -59,14 +59,14 @@ echo -e "${GREEN}No uncommitted changes${NC}"
 
 # Build and vet lit module
 echo -e "${YELLOW}Building and vetting lit...${NC}"
-(cd "$PROJECT_ROOT/lit" && go build ./... && go vet ./...)
+(cd "$PROJECT_ROOT" && go build ./... && go vet ./...)
 echo -e "${GREEN}lit OK${NC}"
 
 echo ""
 
 # --- Step 2: Tag and push ---
 
-TAG="lit/${VERSION}"
+TAG="${VERSION}"
 
 echo -e "${GREEN}=== Releasing $MODULE $VERSION ===${NC}"
 

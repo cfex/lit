@@ -1,11 +1,11 @@
-# go-lightning
+# lit
 
 > Lightweight Go library for PostgreSQL and MySQL database operations. Provides generic CRUD functions, automatic struct-to-table mapping, and works with both `*sql.DB` and `*sql.Tx` via the Executor interface.
 
 ## Installation
 
 ```bash
-go get github.com/tracewayapp/go-lightning/lit
+go get github.com/tracewayapp/lit
 ```
 
 ## Core Concepts
@@ -15,7 +15,7 @@ go get github.com/tracewayapp/go-lightning/lit
 Every struct used with generic CRUD functions must be registered with a driver:
 
 ```go
-import "github.com/tracewayapp/go-lightning/lit"
+import "github.com/tracewayapp/lit"
 
 type User struct {
     Id        int
@@ -281,8 +281,8 @@ myPlaceholders := lit.JoinStringForInWithDriver(lit.MySQL, 0, 3)      // "?,?,?"
 
 ## Documentation
 
-Full documentation: https://tracewayapp.github.io/go-lightning
+Full documentation: https://lit.tracewayapp.com
 
 ## Source
 
-Repository: https://github.com/tracewayapp/go-lightning
+Repository: https://github.com/tracewayapp/lit
